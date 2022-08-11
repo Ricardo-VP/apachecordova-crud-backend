@@ -143,4 +143,5 @@ module.exports = {
   postCreateUser,
   putUpdateUser,
   deleteUser,
+  deleteAllUsers,
 }
