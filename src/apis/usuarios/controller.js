@@ -1,11 +1,11 @@
 const UsuarioModel = require('./model/Usuario')
 
 const getAllUsers = async (req, res, next) => {
-  const { name: username } = req.query
+  const { username } = req.query
 
   if (username !== undefined && username !== null) {
     return await UsuarioModel.find({
-      name: { $regex: username, $options: 'i' },
+      username: { $regex: username, $options: 'i' },
     })
       .then((usuario) => {
         if (usuario === null) {
