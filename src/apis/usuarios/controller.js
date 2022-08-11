@@ -1,20 +1,45 @@
 const UsuarioModel = require('./model/Usuario')
 
-const getAllUsers = async (req, res) => {
-  return await UsuarioModel.find({})
-    .then((usuarios) => {
-      return res.send({
-        type: 'success',
-        usuarios,
+const getAllUsers = async (req, res, next) => {
+  const { name } = req.query
+
+  if (name !== undefined && name !== null) {
+    return await UsuarioModel.find({ name: { $regex: name, $options: 'i' } })
+      .then((usuario) => {
+        if (usuario === null) {
+          return res.send({
+            type: 'error',
+            message: `User with name <${name}> not found`,
+          })
+        }
+        return res.send({
+          type: 'success',
+          usuario,
+        })
       })
-    })
-    .catch((error) => {
-      console.log(error)
-      return res.status(500).send({
-        type: 'error',
-        message: 'Error getting users',
+      .catch((error) => {
+        console.log(error)
+        return res.status(500).send({
+          type: 'error',
+          message: `Error getting user with name <${name}>`,
+        })
       })
-    })
+  } else {
+    return await UsuarioModel.find({})
+      .then((usuarios) => {
+        return res.send({
+          type: 'success',
+          usuarios,
+        })
+      })
+      .catch((error) => {
+        console.log(error)
+        return res.status(500).send({
+          type: 'error',
+          message: 'Error getting users',
+        })
+      })
+  }
 }
 
 const postCreateUser = async (req, res) => {
