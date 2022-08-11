@@ -1,15 +1,17 @@
 const UsuarioModel = require('./model/Usuario')
 
 const getAllUsers = async (req, res, next) => {
-  const { name } = req.query
+  const { name: username } = req.query
 
-  if (name !== undefined && name !== null) {
-    return await UsuarioModel.find({ name: { $regex: name, $options: 'i' } })
+  if (username !== undefined && username !== null) {
+    return await UsuarioModel.find({
+      name: { $regex: username, $options: 'i' },
+    })
       .then((usuario) => {
         if (usuario === null) {
           return res.send({
             type: 'error',
-            message: `User with name <${name}> not found`,
+            message: `User with name <${username}> not found`,
           })
         }
         return res.send({
@@ -21,7 +23,7 @@ const getAllUsers = async (req, res, next) => {
         console.log(error)
         return res.status(500).send({
           type: 'error',
-          message: `Error getting user with name <${name}>`,
+          message: `Error getting user with name <${username}>`,
         })
       })
   } else {
@@ -43,8 +45,14 @@ const getAllUsers = async (req, res, next) => {
 }
 
 const postCreateUser = async (req, res) => {
-  const { name, phone, address } = req.body
-  const user = new UsuarioModel({ name, phone, address })
+  const { fullname, username, password, celular, email } = req.body
+  const user = new UsuarioModel({
+    fullname,
+    username,
+    password,
+    celular,
+    email,
+  })
 
   return await UsuarioModel.create(user)
     .then(() => {
@@ -103,6 +111,29 @@ const deleteUser = async (req, res) => {
       return res.send({
         type: 'error',
         message: `Error deleting the user with id <${userId}>`,
+      })
+    })
+}
+
+const deleteAllUsers = async (req, res) => {
+  return await UsuarioModel.deleteMany({})
+    .then((result) => {
+      if (result) {
+        return res.send({
+          type: 'success',
+          message: 'Users deleted successfully',
+        })
+      }
+      return res.send({
+        type: 'error',
+        message: `Users weren't deleted`,
+      })
+    })
+    .catch((error) => {
+      console.log(error)
+      return res.send({
+        type: 'error',
+        message: `Users weren't deleted`,
       })
     })
 }

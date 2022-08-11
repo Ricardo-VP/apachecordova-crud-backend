@@ -2,12 +2,12 @@ const moongose = require('mongoose')
 
 const usuarioSchema = moongose.Schema(
   {
-    name: String,
-    phone: String,
-    address: {
-      street: String,
-      city: String,
-    },
+    fullname: String,
+    username: String,
+    password: String,
+    celular: String,
+    email: String,
+    fechaNac: Date,
   },
   {
     timestamps: true,
