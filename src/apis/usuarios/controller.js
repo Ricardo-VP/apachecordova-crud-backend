@@ -45,13 +45,14 @@ const getAllUsers = async (req, res, next) => {
 }
 
 const postCreateUser = async (req, res) => {
-  const { fullname, username, password, celular, email } = req.body
+  const { fullname, username, password, celular, email, fechaNac } = req.body
   const user = new UsuarioModel({
     fullname,
     username,
     password,
     celular,
     email,
+    fechaNac,
   })
 
   return await UsuarioModel.create(user)
